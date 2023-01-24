@@ -2,5 +2,5 @@
 set(B_PLUS_TREE_PRINTER_SOURCES b_plus_tree_printer.cpp)
 add_executable(b_plus_tree_printer ${B_PLUS_TREE_PRINTER_SOURCES})
 
-target_link_libraries(b_plus_tree_printer bustub)
+target_link_libraries(b_plus_tree_printer bustub -lstdc++)
 set_target_properties(b_plus_tree_printer PROPERTIES OUTPUT_NAME b_plus_tree_printer)

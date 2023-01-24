@@ -15,6 +15,9 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Debug")
 endif ()
 
+find_package(LLVM 15 REQUIRED CONFIG)
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 if (EMSCRIPTEN)
     add_compile_options(-fexceptions)
@@ -32,8 +35,8 @@ endif ()
 
 # Expected directory structure.
 set(BUSTUB_BUILD_SUPPORT_DIR "${CMAKE_SOURCE_DIR}/build_support")
-set(BUSTUB_CLANG_SEARCH_PATH "/usr/local/bin" "/usr/bin" "/usr/local/opt/llvm/bin" "/usr/local/opt/llvm@14/bin"
-        "/opt/homebrew/opt/llvm@14/bin/")
+# set(BUSTUB_CLANG_SEARCH_PATH "/usr/local/bin" "/usr/bin" "/usr/local/opt/llvm/bin" "/usr/local/opt/llvm@14/bin"
+        # "/opt/homebrew/opt/llvm@14/bin/")
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     if (CMAKE_CXX_COMPILER_VERSION MATCHES "^14.")
@@ -58,7 +61,7 @@ enable_testing()
 
 # attempt to find the binary if user did not specify
 find_program(CLANG_FORMAT_BIN
-        NAMES clang-format clang-format-14
+        NAMES clang-format clang-format-15
         HINTS ${BUSTUB_CLANG_SEARCH_PATH})
 
 if ("${CLANG_FORMAT_BIN}" STREQUAL "CLANG_FORMAT_BIN-NOTFOUND")
@@ -69,7 +72,7 @@ endif ()
 
 # attempt to find the binary if user did not specify
 find_program(CLANG_TIDY_BIN
-        NAMES clang-tidy clang-tidy-14
+        NAMES clang-tidy clang-tidy-15
         HINTS ${BUSTUB_CLANG_SEARCH_PATH})
 
 if ("${CLANG_TIDY_BIN}" STREQUAL "CLANG_TIDY_BIN-NOTFOUND")
@@ -118,8 +121,19 @@ message("${BUSTUB_SANITIZER} sanitizer will be enabled in debug mode.")
 # Compiler flags.
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Werror")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-parameter -Wno-attributes") #TODO: remove
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fsanitize=${BUSTUB_SANITIZER} -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fsanitize=${BUSTUB_SANITIZER} -fno-omit-frame-pointer -fno-optimize-sibling-calls -gdwarf-4")
+# set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -static -lc++abi")
+# set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -lstdc++")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# e.g. to use lld with Clang
+# set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=lld")
+# set(CMAKE_EXE_LINKER_FLAGS "-static")
+# set(CMAKE_MODULE_LINKER_FLAGS"-fuse-ld=lld")
+# set(CMAKE_SHARED_LINKER_FLAGS "-fuse-ld=lld")
+
+# add_link_options("-fuse-ld=lld")
+
 
 message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
