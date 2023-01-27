@@ -142,7 +142,7 @@ class BufferPoolManager {
   /** Number of pages in the buffer pool. */
   const size_t pool_size_;
   /** The next page id to be allocated  */
-  std::atomic<page_id_t> next_page_id_ = 0;
+  std::atomic<page_id_t> next_page_id_ = {0};
   /** Bucket size for the extendible hash table */
   const size_t bucket_size_ = 4;
 

@@ -38,7 +38,7 @@ foreach (bustub_test_source ${BUSTUB_TEST_SOURCES})
             TIMEOUT 120
             )
 
-    target_link_libraries(${bustub_test_name} bustub gtest gmock_main)
+    target_link_libraries(${bustub_test_name} bustub gtest gmock_main -lstdc++)
 
     # Set test target properties and dependencies.
     set_target_properties(${bustub_test_name}
